@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block msg_bem_vindo%}
+<h1 class="text-center">Bem-vindo ao DigãoBook <br><small>Deu trabalho ein! Mereço 10 :D</small></h1>
+{%endblock%}
+
+{% block conteudo %}
+{% if messages %}
+    <br>
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Logar</h4>
+
+        <form method="post" action="{% url 'usuario:login' %}">
+            {% csrf_token%}
+            {{loginform|crispy}}
+            <div class="form-group">
+                <input class="btn btn-success" type="submit" name="entrar" value="Entrar">
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Cadastrar usuário</h4>
+
+        <form method="post" action="{% url 'usuario:signin' %}">
+            {% csrf_token%}
+            {{userform|crispy}}
+            <div class="form-group">
+                <input class="btn btn-success" type="submit" name="registrar" value="Cadastrar">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

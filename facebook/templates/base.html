@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DigãoBook</title>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{%url 'usuario:index'%}">DigãoBook</a>
+      </div>
+      {% block barra%}
+      {%endblock%}
+    </div>
+  </nav>
+
+  <main class="container">
+
+  {% block msg_bem_vindo%}
+  {%endblock%}
+
+  {% block conteudo%}
+  {%endblock%}
+  </main>
+
+  <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

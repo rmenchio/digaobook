@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{%block barra%}
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="{%url 'timeline:index'%}">Página inicial</a></li>
+    <li><a href="{%url 'usuario:perfil'%}">Perfil</a></li>
+    <li><a href="{%url 'usuario:logout'%}">Sair</a></li>
+  </ul>
+{%endblock%}
+
+{% block conteudo%}
+<div class="row">
+    <div class="col-md-3">
+      <!-- profile brief -->
+      <div class="panel panel-default">
+        <div class="media-left">
+          {% if avatar == None%}
+          <img src="{% static 'img/foto.jpeg' %}" class="media-object" style="width: 128px; height: 128px;">
+          {% else %}
+          <img src="{{avatar.foto.url}}" class="media-object" style="width: 128px; height: 128px;">
+          {%endif%}
+        </div>
+        <div class="panel-body">
+          <h4>{{user.first_name}} {{user.last_name}}</h4>
+          <p>Status: {{bio.status}}</p>
+          <p>Localizaçao: {{bio.localizacao}}</p>
+          <p>Amigos: {{qnt_amigos}}</p>
+          <p>Posts: {{qnt_posts}}</p>
+        </div>
+      </div>
+      <!-- ./profile brief -->
+
+      <!-- friend requests -->
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Solicitações de amizade</h4>
+          <ul>
+            {%for solicitacao in solicitacoes%}
+                  <li>
+                    <span href="#">{{solicitacao.usuario.first_name}} {{solicitacao.usuario.last_name}}</span> 
+                    <a href="{%url 'usuario:aceitar-amizade' solicitacao.usuario.id%}"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+                    <a href="{%url 'usuario:negar-amizade' solicitacao.usuario.id%}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    <a href="{%url 'usuario:perfil-publico' solicitacao.usuario.id%}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                  </li>
+            {%endfor%}
+          </ul>
+        </div>
+      </div>
+      <!-- ./friend requests -->
+    </div>
+    <div class="col-md-6">
+      <!-- post form -->
+      <form method="post" action="{%url 'usuario:publicar'%}">
+        {% csrf_token%}
+        <div class="input-group">
+          <input class="form-control" type="text" name="texto" placeholder="O que você está pensando?">
+          <span class="input-group-btn">
+            <button class="btn btn-success" type="submit" name="post">Publicar</button>
+          </span>
+        </div>
+      </form><hr>
+      <!-- ./post form -->
+
+      <!-- feed -->
+      <div>
+        <h4>Mural</h4>
+        {%for post in posts%}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <p>{{post.texto}}</p>
+          </div>
+          <div class="panel-footer">
+            <span>{{post.data}} por {{post.usuario.first_name}}</span> 
+            {% if post.usuario == user%}
+            <span class="pull-right"><a class="text-danger" href="{%url 'usuario:excluir-post' post.id%}">[excluir]</a></span>
+            {%endif%}
+          </div>
+        </div>
+        {%endfor%}
+        
+      </div>
+      <!-- ./feed -->
+    </div>
+    <div class="col-md-3">
+    <!-- add friend -->
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Adicionar amigos</h4>
+          <ul>
+            {%for usuario in usuarios%}
+              {% if usuario.first_name %}
+              <li>
+                <span>{{usuario.first_name}} {{usuario.last_name}}</span> 
+                <a href="{%url 'usuario:perfil-publico' usuario.id%}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                <a href="{%url 'usuario:solicitar-amizade' usuario.id%}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+              </li>
+              {%endif%}
+            {%endfor%}
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Convites enviados</h4>
+          <ul>
+            {%for convites in convites_pendentes%}
+              <li>
+                <span>{{convites.first_name}} {{convites.last_name}}</span>
+                <a href="{%url 'usuario:perfil-publico' convites.id%}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                <a href="#"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+              </li>
+            {%endfor%}
+          </ul>
+        </div>
+      </div>
+      <!-- ./add friend -->
+
+      <!-- friends -->
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Amigos</h4>
+          <ul>
+            {%for amigo in amigos%}
+            <li>
+              <span>{{amigo.first_name}}</span> 
+              <a href="{%url 'usuario:perfil-publico' amigo.id%}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+              <a href="{%url 'usuario:chat-privado' amigo.id%}"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+              <a href="{%url 'usuario:desfazer-amizade' amigo.id%}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+            </li>
+            {%endfor%}
+          </ul>
+        </div>
+      </div>
+      <!-- ./friends -->
+    </div>
+  </div>
+{%endblock%}

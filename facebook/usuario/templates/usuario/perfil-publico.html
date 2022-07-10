@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{%block barra%}
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="{%url 'timeline:index'%}">Página inicial</a></li>
+    <li><a href="{%url 'usuario:perfil'%}">Perfil</a></li>
+    <li><a href="{%url 'usuario:logout'%}">Sair</a></li>
+  </ul>
+{%endblock%}
+
+{% block conteudo %}
+<div class="row">
+    <div class="col-md-6">
+      <!-- user profile -->
+      <div class="media">
+        <div class="media-left">
+          {% if avatar == None%}
+          <img src="{% static 'img/foto.jpeg' %}" class="media-object" style="width: 128px; height: 128px;">
+          {% else %}
+          <img src="{{avatar.foto.url}}" class="media-object" style="width: 128px; height: 128px;">
+          {%endif%}
+        </div>
+        <div class="media-body">
+          <h2 class="media-heading">{{usuario.first_name}}</h2>
+          <p>Status: {{bio.status}}</p>
+          <p>Localizaçao: {{bio.localizacao}}</p>
+          <p>Amigos: {{qnt_amigos}}</p>
+          <p>Posts: {{qnt_posts}}</p>
+        </div>
+      </div>
+      <!-- user profile -->
+
+      <hr>
+
+      <!-- timeline -->
+      <div>
+        <!-- post -->
+        <h4>Posts de {{usuario.first_name}}</h4>
+        {%for post in posts%}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <p>{{post.texto}}</p>
+          </div>
+          <div class="panel-footer">
+            <span>{{post.data}}</span> 
+          </div>
+        </div>
+        {%endfor%}
+        <!-- ./post -->
+      </div>
+      <!-- ./timeline -->
+    </div>
+    <div class="col-md-3">
+      <!-- friends -->
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Amigos</h4>
+          <ul>
+            {%for amigo in amigos%}
+            <li>
+              <span>{{amigo.first_name}}</span> 
+              <a href="{%url 'usuario:perfil-publico' amigo.id%}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+            </li>
+            {%endfor%}
+          </ul>
+        </div>
+      </div>
+      <!-- ./friends -->
+    </div>
+  </div>
+  {%endblock%}
